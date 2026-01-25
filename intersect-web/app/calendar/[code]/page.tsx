@@ -15,6 +15,7 @@ export default function CalendarPage() {
   const [authCode, setAuthCode] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
 
   // Fetch room data on mount
   useEffect(() => {
@@ -145,23 +146,44 @@ export default function CalendarPage() {
     );
   }
 
-  // Generate calendar days based on room dates
+  // Generate all weeks from start to end date
   const startDate = new Date(room.start);
   const endDate = new Date(room.end);
-  const calendarDays = [];
-  const currentDate = new Date(startDate);
   
-  while (currentDate <= endDate && calendarDays.length < 7) {
-    calendarDays.push({
-      day: currentDate.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-      date: currentDate.getDate(),
-      fullDate: new Date(currentDate)
-    });
-    currentDate.setDate(currentDate.getDate() + 1);
+  // Find the start of the first week (Sunday before or on start date)
+  const firstWeekStart = new Date(startDate);
+  firstWeekStart.setDate(startDate.getDate() - startDate.getDay());
+  
+  // Generate all weeks
+  const weeks: Array<Array<{ day: string; date: number; month: number; year: number; fullDate: Date }>> = [];
+  const currentWeekStart = new Date(firstWeekStart);
+  
+  while (currentWeekStart <= endDate) {
+    const week = [];
+    const weekStart = new Date(currentWeekStart);
+    
+    for (let i = 0; i < 7; i++) {
+      const dayDate = new Date(weekStart);
+      dayDate.setDate(weekStart.getDate() + i);
+      
+      week.push({
+        day: dayDate.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+        date: dayDate.getDate(),
+        month: dayDate.getMonth(),
+        year: dayDate.getFullYear(),
+        fullDate: new Date(dayDate)
+      });
+    }
+    
+    weeks.push(week);
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
   }
 
+  // Get current week
+  const calendarDays = weeks[currentWeekIndex] || weeks[0];
+
   // Convert calendar data to events
-  const events: Array<{ day: number; start: number; duration: number; color: string; user: string }> = [];
+  const events: Array<{ day: number; month: number; year: number; start: number; duration: number; color: string; user: string }> = [];
   const colors = ['bg-blue-400', 'bg-orange-400', 'bg-purple-400', 'bg-pink-400', 'bg-yellow-400'];
   
   if (calendarData) {
@@ -171,14 +193,15 @@ export default function CalendarPage() {
       userEvents.forEach(event => {
         const eventStart = new Date(event.start);
         const eventEnd = new Date(event.end);
-        const eventDate = eventStart.getDate();
         
         const startHour = eventStart.getHours() + eventStart.getMinutes() / 60;
         const endHour = eventEnd.getHours() + eventEnd.getMinutes() / 60;
         const duration = endHour - startHour;
         
         events.push({
-          day: eventDate,
+          day: eventStart.getDate(),
+          month: eventStart.getMonth(),
+          year: eventStart.getFullYear(),
           start: startHour,
           duration,
           color,
@@ -188,9 +211,23 @@ export default function CalendarPage() {
     });
   }
 
+  // Generate hours from 12 AM to 11 PM (24 hours)
+  const hours = Array.from({ length: 24 }, (_, i) => {
+    if (i === 0) return '12 AM';
+    if (i < 12) return `${i} AM`;
+    if (i === 12) return '12 PM';
+    return `${i - 12} PM`;
+  });
+
+  // Format week range for display
+  const weekStart = calendarDays[0].fullDate;
+  const weekEnd = calendarDays[6].fullDate;
+  const weekRangeText = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
   return (
     <div className="min-h-screen bg-white p-6">
-      <div className="mb-6 flex items-center justify-between">
+      {/* Fixed header */}
+      <div className="mb-6 flex items-center justify-between sticky top-0 bg-white z-10 pb-4">
         <div className="bg-green-300 px-4 py-2 rounded font-mono">{room.code}</div>
         <h1 className="text-4xl font-light flex-1 text-center">{room.name}</h1>
         <button
@@ -239,6 +276,7 @@ export default function CalendarPage() {
         </div>
       )}
 
+      {/* Participants */}
       <div className="mb-4">
         <p className="text-sm text-gray-600">Participants: {room.users.length}</p>
         <div className="flex gap-2 mt-2 flex-wrap">
@@ -251,48 +289,110 @@ export default function CalendarPage() {
         </div>
       </div>
 
+      {/* Calendar with scrolling */}
       <div className="border rounded-lg overflow-hidden">
-        <div className="grid grid-cols-8 border-b">
-          <div className="p-2 text-sm">
-            {startDate.toLocaleDateString('en-US', { month: 'short' })}
+        {/* Week navigation and header row */}
+        <div className="bg-white sticky top-0 z-20">
+          {/* Week selector */}
+          <div className="flex items-center justify-center gap-4 p-2 border-b bg-gray-50">
+            <button
+              onClick={() => setCurrentWeekIndex(Math.max(0, currentWeekIndex - 1))}
+              disabled={currentWeekIndex === 0}
+              className="px-3 py-1 bg-green-300 rounded hover:bg-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              &lt;
+            </button>
+            <span className="text-sm font-medium min-w-[200px] text-center">
+              {weekRangeText}
+            </span>
+            <button
+              onClick={() => setCurrentWeekIndex(Math.min(weeks.length - 1, currentWeekIndex + 1))}
+              disabled={currentWeekIndex === weeks.length - 1}
+              className="px-3 py-1 bg-green-300 rounded hover:bg-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              &gt;
+            </button>
           </div>
-          {calendarDays.map((day, i) => (
-            <div key={i} className="text-center p-2 border-l">
-              <div className="text-xs text-gray-500">{day.day}</div>
-              <div className="font-medium">{day.date}</div>
-            </div>
-          ))}
-        </div>
 
-        <div className="relative h-96">
-          <div className="absolute inset-0 grid grid-cols-8">
-            <div className="text-xs text-gray-500 p-2 space-y-8">
-              {Array.from({ length: 14 }, (_, i) => (
-                <div key={i}>
-                  {i + 9 > 12 ? `${i - 3} PM` : `${i + 9} AM`}
-                </div>
-              ))}
-            </div>
-            
+          {/* Day headers */}
+          <div className="grid grid-cols-8 border-b">
+            <div className="p-2 text-sm">Time</div>
             {calendarDays.map((day, i) => (
-              <div key={i} className="border-l relative bg-green-50">
-                {events
-                  .filter(event => event.day === day.date)
-                  .map((event, j) => (
-                    <div
-                      key={j}
-                      className={`absolute left-1 right-1 ${event.color} rounded opacity-80 text-xs text-white p-1 overflow-hidden`}
-                      style={{
-                        top: `${((event.start - 9) / 13) * 100}%`,
-                        height: `${(event.duration / 13) * 100}%`
-                      }}
-                      title={event.user}
-                    />
-                  ))}
+              <div key={i} className="text-center p-2 border-l">
+                <div className="text-xs text-gray-500">{day.day}</div>
+                <div className="font-medium">
+                  {day.date}
+                  {day.month !== calendarDays[3].month && (
+                    <span className="text-xs text-gray-500 ml-1">
+                      {day.fullDate.toLocaleDateString('en-US', { month: 'short' })}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Scrollable calendar body */}
+        <div className="overflow-y-auto max-h-[calc(100vh-350px)]">
+          <div className="relative" style={{ height: `${24 * 60}px` }}>
+            <div className="absolute inset-0 grid grid-cols-8">
+              {/* Time labels column */}
+              <div className="text-xs text-gray-500 border-r bg-white sticky left-0 z-10">
+                {hours.map((hour, i) => (
+                  <div 
+                    key={i} 
+                    className="px-2 border-b"
+                    style={{ 
+                      height: '60px',
+                      lineHeight: '60px'
+                    }}
+                  >
+                    {hour}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Calendar days columns */}
+              {calendarDays.map((day, i) => (
+                <div key={i} className="border-l relative bg-green-50">
+                  {/* Hour lines */}
+                  {hours.map((_, hourIndex) => (
+                    <div 
+                      key={hourIndex}
+                      className="border-b"
+                      style={{ height: '60px' }}
+                    />
+                  ))}
+                  
+                  {/* Events */}
+                  {events
+                    .filter(event => 
+                      event.day === day.date && 
+                      event.month === day.month && 
+                      event.year === day.year
+                    )
+                    .map((event, j) => (
+                      <div
+                        key={j}
+                        className={`absolute left-1 right-1 ${event.color} rounded opacity-80 text-xs text-white p-1 overflow-hidden`}
+                        style={{
+                          top: `${event.start * 60}px`,
+                          height: `${event.duration * 60}px`
+                        }}
+                        title={event.user}
+                      />
+                    ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Week indicator */}
+      <div className="text-center text-sm text-gray-500 mt-2">
+        Week {currentWeekIndex + 1} of {weeks.length}
       </div>
     </div>
   );
