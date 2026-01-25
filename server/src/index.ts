@@ -96,6 +96,44 @@ app.post("/exchange-code", async (req, res) => {
   }
 });
 
+// List user's calendars
+app.get("/list-calendars", async (req, res) => {
+  const accessToken = req.query.accessToken as string;
+  
+  if (!accessToken) {
+    res.status(400).send({ error: 'No access token provided' });
+    return;
+  }
+
+  try {
+    const credentials = require(CREDENTIALS_PATH);
+    const { client_secret, client_id } = credentials.installed;
+    
+    const oauth2Client = new google.auth.OAuth2(
+      client_id,
+      client_secret,
+      'urn:ietf:wg:oauth:2.0:oob'
+    );
+    
+    oauth2Client.setCredentials({ access_token: accessToken });
+    
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarList = await calendar.calendarList.list();
+    
+    const calendars = calendarList.data.items?.map(cal => ({
+      id: cal.id,
+      summary: cal.summary,
+      primary: cal.primary,
+      backgroundColor: cal.backgroundColor
+    })) || [];
+    
+    res.send({ calendars });
+  } catch (error) {
+    console.error('Error fetching calendars:', error);
+    res.status(500).send({ error: 'Failed to fetch calendars' });
+  }
+});
+
 // Start the Express server
 app.listen(port, () => {
     console.log(`The server is running at http://localhost:${port}`);
