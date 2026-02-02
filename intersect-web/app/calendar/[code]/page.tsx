@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Room, CalendarData, API_BASE_URL } from "../../../types";
+import "../../styles.css"
 
 interface CalendarListItem {
   id: string;
@@ -316,21 +317,17 @@ export default function CalendarPage() {
   const weekRangeText = `${weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="calendar-container">
       {/* Fixed header */}
-      <div className="mb-6 flex items-center justify-between sticky top-0 bg-white z-10 pb-4">
-        <div className="bg-green-300 px-4 py-2 rounded font-mono">
-          {room.code}
-        </div>
-        <h1 className="text-4xl font-light flex-1 text-center">{room.name}</h1>
-        <button
-          onClick={handleGoogleAuth}
-          disabled={loading}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-        >
-          {loading ? "Adding..." : "+ Add Calendar"}
-        </button>
-      </div>
+      <div className="calendar-code">{room.code}</div>
+      <h1 className="calendar-title">{room.name}</h1>
+      <button
+        onClick={handleGoogleAuth}
+        disabled={loading}
+        className="add-calendar-button"
+      >
+        {loading ? "Adding..." : "+ Add Calendar"}
+      </button>
 
       {/* Authorization code input */}
       {showCodeInput && (

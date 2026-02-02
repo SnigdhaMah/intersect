@@ -181,3 +181,51 @@
 .nav-link.active {
   background-color: #84E694;
 }
+
+/* Calendar */
+.calendar-container {
+  color:#000000;
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding: 1.5rem;
+}
+
+.calendar-code {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color:#000000;
+  font-size: xx-large;
+  background-color: #86efac;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 1rem;
+  font-family: monospace;
+}
+
+.calendar-title {
+  color: #000000;
+  font-size: 2.5rem;
+  font-weight: 300;
+  flex: 1;
+  text-align: center;
+}
+
+.add-calendar-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-size: large;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 0 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.add-calendar-button:hover {
+  background-color: #2563eb;
+}
+
+.add-calendar-button:disabled {
+  opacity: 0.5;
+}
