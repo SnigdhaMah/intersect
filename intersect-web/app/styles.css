@@ -1,0 +1,183 @@
+/* Page layout */
+.page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Header */
+.title {
+  color:#000000;
+  font-size: 4rem;
+  font-weight: 300;
+  margin-bottom: 3rem;
+}
+
+/* Form container */
+.form {
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Inputs */
+.text-input {
+  width: 100%;
+  background-color: #86efac; /* green-300 */
+  color: #000000;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  border: none;
+  font-size: 2rem;
+}
+
+.text-input::placeholder {
+  color: #839386; 
+}
+
+.datetime-input {
+  width: 12rem;
+  background-color: #86efac;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  border: none;
+}
+
+/* Time section */
+.time-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sub-heading {
+  color:#000000;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.time-row {
+  color: #839386; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.time-separator {
+  font-size: 1.5rem;
+}
+
+/* Error */
+.error {
+  color: #dc2626; /* red-600 */
+  text-align: center;
+}
+
+/* Button */
+.button-row {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.button {
+  color:#000000;
+  background-color: #86efac;
+  padding: 0.75rem 3rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 5 10 #e8e8e8;
+}
+
+.button:hover {
+  background-color: #4ade80; /* green-400 */
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Footer bar */
+.footer {
+  height: 4rem;
+  background-color: #96FFA7;
+  box-shadow: 0 -5 10 #e8e8e8;
+}
+
+
+/* Join page */
+/* Reusable spacing helpers */
+.mb-large {
+  margin-bottom: 1rem;
+}
+
+/* Uppercase input */
+.uppercase {
+  text-transform: uppercase;
+}
+
+/* About Page */
+/* Text blocks */
+.text-container {
+  color: #000000;
+  width: 100%;
+  max-width: 42rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-muted {
+  color: #4b5563; /* gray-600 */
+}
+
+/* Nav Bar */
+/* =========================
+   NavBar
+========================= */
+
+.navbar {
+  background-color: #96FFA7;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+  box-shadow: 0 5 10 #e8e8e8;
+}
+
+.nav-link {
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 400;
+  color: black;
+  font-size: x-large;
+}
+
+.nav-link.active {
+  background-color: #84E694;
+}

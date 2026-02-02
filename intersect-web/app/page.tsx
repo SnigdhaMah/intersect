@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NavBar } from '../components/NavBar';
 import { API_BASE_URL } from '../types';
+import './styles.css';
 
 export default function PlanEventPage() {
   const router = useRouter();
@@ -16,6 +17,10 @@ export default function PlanEventPage() {
   const handleCreate = async () => {
     if (!eventName || !startDate || !endDate) {
       setError('Please fill in all fields');
+      return;
+    }
+    if (startDate > endDate) {
+      setError('Start date must be before end date');
       return;
     }
 
@@ -33,8 +38,6 @@ export default function PlanEventPage() {
       }
 
       const data = await response.json();
-      
-      // Redirect to calendar page with room code
       router.push(`/calendar/${data.room.code}`);
     } catch (err) {
       setError('Failed to create room. Please try again.');
@@ -45,54 +48,57 @@ export default function PlanEventPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="page">
       <NavBar />
-      <div className="flex-1 flex flex-col items-center justify-center p-8">
-        <h1 className="text-4xl font-light mb-12">Plan a New Event</h1>
-        <div className="w-full max-w-md space-y-8">
+
+      <div className="content">
+        <h1 className="title">Plan a New Event</h1>
+
+        <div className="form">
           <input
             type="text"
             placeholder="New Event Name"
             value={eventName}
             onChange={(e) => setEventName(e.target.value)}
-            className="w-full bg-green-300 text-black placeholder-green-800 px-6 py-4 rounded-lg text-center"
+            className="text-input"
           />
-          
-          <div className="space-y-4">
-            <p className="text-center text-lg">Possible Time Frame</p>
-            <div className="flex items-center justify-center gap-4">
+
+          <div className="time-section">
+            <p className="sub-heading">Possible Time Frame</p>
+
+            <div className="time-row">
               <input
-                type="datetime-local"
+                type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-48 bg-green-300 px-4 py-3 rounded-lg text-center"
+                className="datetime-input"
               />
-              <span className="text-2xl">—</span>
+              <span className="time-separator">—</span>
               <input
-                type="datetime-local"
+                type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-48 bg-green-300 px-4 py-3 rounded-lg text-center"
+                min={startDate}
+                className="datetime-input"
               />
             </div>
           </div>
 
-          {error && (
-            <div className="text-red-600 text-center">{error}</div>
-          )}
+          {error && <div className="error">{error}</div>}
 
-          <div className="flex justify-center pt-4">
+          <div className="button-row">
             <button
               onClick={handleCreate}
               disabled={loading}
-              className="bg-green-300 px-12 py-3 rounded-lg font-medium hover:bg-green-400 transition disabled:opacity-50"
+              className="button"
             >
               {loading ? 'Creating...' : 'Create'}
             </button>
           </div>
         </div>
       </div>
-      <div className="h-16 bg-green-300"></div>
+
+      <div className="footer" />
     </div>
   );
 }

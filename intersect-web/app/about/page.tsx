@@ -2,23 +2,29 @@
 
 import React from 'react';
 import { NavBar } from '../../components/NavBar';
+import '../styles.css';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="page">
       <NavBar />
-      <div className="flex-1 flex flex-col items-center justify-center p-8">
-        <h1 className="text-4xl font-light mb-12">About</h1>
-        <div className="w-full max-w-2xl space-y-4 text-center">
+
+      <div className="content">
+        <h1 className="title mb-large">About Intersect</h1>
+
+        <div className="text-container">
           <p className="text-lg">
-            Welcome to Event Planning! This app helps you coordinate events by combining multiple people&apos;s calendars.
+            Welcome to Intersect! This app helps you coordinate events by
+            combining multiple Google calendars. 
           </p>
-          <p className="text-gray-600">
-            Create a room, share the code with participants, and find the best time for everyone to meet.
+
+          <p className="text-muted">
+            Create a room, share the code with friends, and plan your events with ease!
           </p>
         </div>
       </div>
-      <div className="h-16 bg-green-300"></div>
+
+      <div className="footer" />
     </div>
   );
 }

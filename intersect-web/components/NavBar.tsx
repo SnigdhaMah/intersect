@@ -3,27 +3,30 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import '../app/styles.css';
 
 export const NavBar = () => {
   const pathname = usePathname();
-  
+
   return (
-    <nav className="bg-green-300 p-4 flex justify-center gap-8">
+    <nav className="navbar">
       <Link
         href="/about"
-        className={`px-4 py-2 ${pathname === '/about' ? 'font-bold' : ''}`}
+        className={`nav-link ${pathname === '/about' ? 'active' : ''}`}
       >
         About
       </Link>
+
       <Link
         href="/join"
-        className={`px-4 py-2 ${pathname === '/join' ? 'font-bold' : ''}`}
+        className={`nav-link ${pathname === '/join' ? 'active' : ''}`}
       >
         Join Room
       </Link>
+
       <Link
         href="/"
-        className={`px-4 py-2 ${pathname === '/' ? 'font-bold' : ''}`}
+        className={`nav-link ${pathname === '/' ? 'active' : ''}`}
       >
         Plan Event
       </Link>

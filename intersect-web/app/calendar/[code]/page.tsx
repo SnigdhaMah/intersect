@@ -585,11 +585,6 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
-
-      {/* Week indicator */}
-      <div className="text-center text-sm text-gray-500 mt-2">
-        Week {currentWeekIndex + 1} of {weeks.length}
-      </div>
     </div>
   );
 }
