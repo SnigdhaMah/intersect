@@ -516,7 +516,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Scrollable calendar body */}
-        <div className="overflow-y-auto max-h-[calc(100vh-400px)]">
+        <div className="overflow-y-auto max-h-[calc(100vh-400px)]" style={{maxHeight: window.screen.height * 0.5}}>
           <div className="relative" style={{ height: `${24 * 60}px` }}>
             <div className="absolute inset-0 grid grid-cols-8">
               {/* Time labels column */}

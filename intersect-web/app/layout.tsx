@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Event Planning App",
+  title: "Intersect",
   description: "Coordinate events with multiple calendars",
 };
 
