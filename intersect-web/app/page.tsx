@@ -41,7 +41,7 @@ export default function PlanEventPage() {
       router.push(`/calendar/${data.room.code}`);
     } catch (err) {
       setError('Failed to create room. Please try again.');
-      console.error(err);
+      console.log(err);
     } finally {
       setLoading(false);
     }

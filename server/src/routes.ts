@@ -159,7 +159,7 @@ export const createRoom = (req: SafeRequest, res: SafeResponse): void => {
     return;
   }
 
-  if (start >= end) {
+  if (start > end) {
     res.status(400).send({ error: "Start time must be before end time" });
     return;
   }
